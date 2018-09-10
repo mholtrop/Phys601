@@ -64,7 +64,7 @@ def double_pendulum_step(invars,t,params):
 #
 # Setup the constants for the problem.
 #
-
+save_output = False  # Set to True to save the output to file.
 G = 9.8  # acceleration due to gravity, in m/s^2
 L1 = 1.0  # length of pendulum 1 in m
 M1 = 1.1  # mass of pendulum 1 in kg
@@ -84,7 +84,7 @@ state = np.radians([theta1_0,omega1_0,theta2_0,omega2_0])
 # create a time array from 0..60 seconds, sampled at dt second steps
 # Making the step size too small increases computational time, but makes the solution more accurate.
 Max_time = 60
-dt = 0.05
+dt = 0.01
 t = np.arange(0.0, Max_time, dt)
 
 #
@@ -133,7 +133,10 @@ ax3.plot(result_t[:,i_theta2]*180./np.pi,result_t[:,i_omega2]*180./np.pi,label="
 ax3.set_xlabel("$\\theta$(deg)")
 ax3.set_ylabel("$\omega$(deg/s)")
 ax3.legend(loc="lower right")
-plt.show()
+if save_output:
+    plt.savefig("double_pendulum.pdf")
+else:
+    plt.show()
 
 #
 # Here we setup the animation.
@@ -143,24 +146,40 @@ plt.tight_layout()
 ax = fig2.add_subplot(111, autoscale_on=False, xlim=(-(L1+L2), (L1+L2)), ylim=(-(L1+L2)*1.05, (L2)))
 ax.grid()
 
-line, = ax.plot([], [], 'o-', lw=2) # A line without the parameters set.
+max_trace_depth=250
+line1, = ax.plot([], [], 'o-', lw=2,color="blue") # A line without the parameters set.
+trace1, = ax.plot([],[], lw=1,color="blue")
+line2, = ax.plot([], [], 'o-', lw=2,color="red") # A line without the parameters set.
+trace2, = ax.plot([],[], lw=1,color="red")
 time_template = 'time = %.1fs'      # To print the time on the plot
 time_text = ax.text(0.05, 0.9, '', transform=ax.transAxes)
 
 
 def init():                   # initialize everything
-    line.set_data([], [])
+    line1.set_data([], [])
+    line2.set_data([], [])
+    trace1.set_data([],[])
+    trace2.set_data([],[])
     time_text.set_text('')
-    return line, time_text
+    return line1,line2,trace1,trace2, time_text
 
 
 def animate(i):               # Do animation step i.
-    thisx = [0, x1[i], x2[i]]
-    thisy = [0, y1[i], y2[i]]
+    thisx1 = [0, x1[i]]
+    thisy1 = [0, y1[i]]
+    thisx2 = [x1[i], x2[i]]
+    thisy2 = [y1[i], y2[i]]
+    line1.set_data(thisx1, thisy1)
+    line2.set_data(thisx2, thisy2)
+    if i < max_trace_depth:
+        trace1.set_data(x1[0:i],y1[0:i])
+        trace2.set_data(x2[0:i],y2[0:i])
+    else:
+        trace1.set_data(x1[i-max_trace_depth:i],y1[i-max_trace_depth:i])
+        trace2.set_data(x2[i-max_trace_depth:i],y2[i-max_trace_depth:i])
 
-    line.set_data(thisx, thisy)
     time_text.set_text(time_template % (i*dt))
-    return line, time_text
+    return line1,line2,trace1,trace2, time_text
 
 
 #
@@ -173,10 +192,16 @@ def animate(i):               # Do animation step i.
 # https://jakevdp.github.io/blog/2012/08/18/matplotlib-animation-tutorial
 #
 ani = animation.FuncAnimation(fig2, animate, np.arange(1, len(result_t)),
-                              interval=100, blit=True, init_func=init)
+                              interval=2, blit=True, init_func=init)
+# Note: interval is the delay between frames in ms, IF your computer can keep up.
+# So a larger number slows down the animation, a smaller number speeds it up.
+# To get "real time" you would want this to be dt*1000.
 #
 # Don't make the movie.
 # video = HTML(ani.to_html5_video())
 #
 # Just show the result.
-plt.show()
+if save_output:
+    ani.save(filename="double_pendulum.mp4",fps=60)
+else:
+    plt.show()
