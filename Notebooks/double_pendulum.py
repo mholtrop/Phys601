@@ -1,6 +1,14 @@
 #!/usr/bin/env python
 #
-# Test ODE integration
+# Double Pendulum problem solved with numeric integration.
+#
+# This is the pure Python version, which runs the animation much faster,
+# since it start showing frames while computing the next one.
+#
+# To run this, just type "python double_pendulum.py"
+#
+# To get the Notebook version, with complete documentation, go here:
+# https://github.com/mholtrop/Phys601/blob/master/Notebooks/Double_Pendulum.ipynb
 #
 """
 Author: Maurik Holtrop @ UNH
@@ -53,6 +61,9 @@ def double_pendulum_step(invars,t,params):
     out[3] = d_omega2
     return(out)
 
+#
+# Setup the constants for the problem.
+#
 
 G = 9.8  # acceleration due to gravity, in m/s^2
 L1 = 1.0  # length of pendulum 1 in m
@@ -60,8 +71,8 @@ M1 = 1.1  # mass of pendulum 1 in kg
 L2 = 0.47  # length of pendulum 2 in m
 M2 = 0.5  # mass of pendulum 2 in kg
 parameters = (L1,M1,L2,M2,G)
-# th1 and th2 are the initial angles (degrees)
-# w10 and w20 are the initial angular velocities (degrees per second)
+# theta1_0 and theta2_0 are the initial angles (degrees)
+# omega1_0 and omega2_0 are the initial angular velocities (degrees per second)
 theta1_0 = 80.0
 omega1_0 = 0.0
 theta2_0 = -25.0
@@ -91,12 +102,17 @@ result_t = integrate.odeint(double_pendulum_step, state, t,args=(parameters,))
 # The result_t is now an array of arrays.
 # The first index are the time steps, the second are the variable index.
 # Convert the polar coordinates back to cartesian (x,y)
+#
 x1 = L1*np.sin(result_t[:, i_theta1])
 y1 = -L1*np.cos(result_t[:,i_theta1])
 
 x2 = L2*np.sin(result_t[:, i_theta2]) + x1
 y2 = -L2*np.cos(result_t[:,i_theta2]) + y1
-
+#
+#  Now make a graph.
+#  The first two show the behavior of theta 1 and 2 vs time, and the same for omega.
+#  The third plot (on the same page) shows the omega vs theta phase diagram.
+#
 fig1,(ax1,ax2,ax3) = plt.subplots(3,sharex=False,figsize=(8,12))
 plt.tight_layout()
 #ax1.set_title('Double Pendulum')
@@ -119,23 +135,26 @@ ax3.set_ylabel("$\omega$(deg/s)")
 ax3.legend(loc="lower right")
 plt.show()
 
+#
+# Here we setup the animation.
+#
 fig2 = plt.figure(figsize=(9,7))
 plt.tight_layout()
 ax = fig2.add_subplot(111, autoscale_on=False, xlim=(-(L1+L2), (L1+L2)), ylim=(-(L1+L2)*1.05, (L2)))
 ax.grid()
 
-line, = ax.plot([], [], 'o-', lw=2)
-time_template = 'time = %.1fs'
+line, = ax.plot([], [], 'o-', lw=2) # A line without the parameters set.
+time_template = 'time = %.1fs'      # To print the time on the plot
 time_text = ax.text(0.05, 0.9, '', transform=ax.transAxes)
 
 
-def init():
+def init():                   # initialize everything
     line.set_data([], [])
     time_text.set_text('')
     return line, time_text
 
 
-def animate(i):
+def animate(i):               # Do animation step i.
     thisx = [0, x1[i], x2[i]]
     thisy = [0, y1[i], y2[i]]
 
@@ -143,6 +162,21 @@ def animate(i):
     time_text.set_text(time_template % (i*dt))
     return line, time_text
 
+
+#
+#  Now run the animation.
+#
+#
+# For more on how to animate your results, see:
+# https://matplotlib.org/api/animation_api.html
+# and
+# https://jakevdp.github.io/blog/2012/08/18/matplotlib-animation-tutorial
+#
 ani = animation.FuncAnimation(fig2, animate, np.arange(1, len(result_t)),
                               interval=100, blit=True, init_func=init)
+#
+# Don't make the movie.
+# video = HTML(ani.to_html5_video())
+#
+# Just show the result.
 plt.show()
