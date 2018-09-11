@@ -64,7 +64,7 @@ def double_pendulum_step(invars,t,params):
 #
 # Setup the constants for the problem.
 #
-save_output = False  # Set to True to save the output to file.
+save_output = True  # Set to True to save the output to file.
 G = 9.8  # acceleration due to gravity, in m/s^2
 L1 = 1.0  # length of pendulum 1 in m
 M1 = 1.1  # mass of pendulum 1 in kg
