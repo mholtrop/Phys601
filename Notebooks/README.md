@@ -11,6 +11,10 @@ These notebooks, and supporting data, are used in the UNH Phys601 course.
 3. **06\_Errors\_and\_Bugs** - Introduction on how to track down errors in your code, and how to debug code.
 4. **07\_Stepping\_in\_Time** - Show how to step a differential equation, using a thrown ball as an example. Shows how to program a Runge-Kutta algorithm.
 5. **08\_Very\_Large\_Numbers** - Shows how to work with numbers that are very large, either integers, or floating point.
+6. **09\_Fourier\_Transforms** - Shows how you can compute Fourier transforms, both using loops and using function calls for Fast Fourier Transforms.
+7. **10\_Vectors\_and\_Matrixes** - Introduces you to more details of Numpy's use of vectors and matrizes.
+8. **11\_Loops\_and\_List\_Comprehension** - A quick note on how to use loops and list comprehension.
+9. **12\_Faster\_Programs** - Introduces you to some things you can do to make your code run faster.
 
 ### Advanced Notebooks:
 
