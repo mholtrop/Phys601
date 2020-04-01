@@ -6,3 +6,15 @@ Code and Notebooks for Physics 601 at the University of New Hampshire
 All the Jypyter notebooks are in the Notebooks subdirectory.
 
 Notebook names start with a number, so they are sequenced in the order in which they were discussed in class. Notebooks starting with an "E" are extras, just for entertainment, but you can learn a lot from them. Notebooks starting with "A" are considered more advanced. 
+
+## QM Notebooks
+
+This is the location for a set of more advanced notebooks specifically
+for Quantum Mechanics.
+
+## Advanced
+
+Here you find more advanced notebooks, which assume a higher level of 
+familiarity with Python and the basic set of notebooks, which is
+why they will have less detailed explanations of each step
+in a calculation.
