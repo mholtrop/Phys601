@@ -138,10 +138,9 @@ def Get_NYT_USA_Data(from_web=True):
     data_counties.loc[data_counties["county"] == "New York City", "fips"] = 36999   # New York City region
     data_counties.loc[data_counties["county"] == "Kansas City", "fips"] = 29999
     # The rest are "Unknown" counties
-    data_counties.loc[data_counties["fips"] == "", "fips"] = \
-        [data_states.loc[data_states["state"] == i, "fips"].values[0] + '998'
-         for i in data_counties.loc[data_counties["fips"] == "", "state"]]
-
+    for i in data_counties.loc[data_counties["fips"] == ""].index:
+        fips=1000*int(data_states.loc[data_states["state"] == data_counties.loc[i, "state"], "fips"].values[0])+998
+        data_counties.loc[i, "fips"] = str(fips)
 
     state_name_to_abbrev, abbrev_to_state_name = Get_Abbrevs()
     # add abbreviation to each state.
