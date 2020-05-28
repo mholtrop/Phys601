@@ -27,6 +27,17 @@ def Get_Abbrevs():
     state_name_to_abbrev = requests.get(state_name_to_abbrev_url).json()
     abbrev_to_state_name_url = "https://worldpopulationreview.com/static/states/abbr-name.json"
     abbrev_to_state_name = requests.get(abbrev_to_state_name_url).json()
+
+    # Add some "States" by hand.
+    state_name_to_abbrev["Puerto Rico"]="PR"
+    abbrev_to_state_name["PR"]="Puerto Rico"
+    state_name_to_abbrev["Guam"]="GU"
+    abbrev_to_state_name["GU"]="Guam"
+    state_name_to_abbrev["Virgin Islands"]="VI"
+    abbrev_to_state_name["VI"]="Virgin Islands"
+    state_name_to_abbrev["Northern Mariana Islands"]="MP"
+    abbrev_to_state_name["MP"]="Northern Mariana Islands"
+    
     return state_name_to_abbrev, abbrev_to_state_name
 
 def Get_County_GEO(force_web=False):
@@ -144,8 +155,28 @@ def Get_NYT_USA_Data(from_web=True):
 
     state_name_to_abbrev, abbrev_to_state_name = Get_Abbrevs()
     # add abbreviation to each state.
-    data_states.loc[:, 'st'] = [state_name_to_abbrev[name.title()] for name in data_states.loc[:, "state"]]
-    data_counties.loc[:, 'st'] = [state_name_to_abbrev[name.title()] for name in data_counties.loc[:, "state"]]
+
+    tmp_st=[]
+    for name in data_states.loc[:, "state"]:
+        try:
+            tmp_st_name=state_name_to_abbrev[name.title()]
+        except KeyError:
+            print("The new name {} is not yet handled properly. ".format(name))
+            tmp_st_name="NA"
+        tmp_st.append(tmp_st_name)
+
+    data_states.loc[:, 'st'] = tmp_st # [state_name_to_abbrev[name.title()] for name in data_states.loc[:, "state"]]
+
+    tmp_st = []
+    for name in data_counties.loc[:, "state"]:
+        try:
+            tmp_st_name = state_name_to_abbrev[name.title()]
+        except KeyError:
+            print("The new county state name {} is not yet handled properly. ".format(name))
+            tmp_st_name = "NA"
+        tmp_st.append(tmp_st_name)
+
+    data_counties.loc[:, 'st'] = tmp_st # [state_name_to_abbrev[name.title()] for name in data_counties.loc[:, "state"]]
     #
     # Add population counts
     #
