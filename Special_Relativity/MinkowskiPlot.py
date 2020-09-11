@@ -1,6 +1,7 @@
 #
 # Some code to help with creating Minkowski Plots.
 #
+# Author: Maurik Holtrop @ UNH  Sept 11, 2020
 #
 import math as m
 import numpy as np
@@ -8,7 +9,7 @@ import plotly.graph_objects as go
 import plotly.io as pio
 from matplotlib import colors as ccc
 
-pio.templates.default="plotly_white"
+pio.templates.default = "plotly_white"
 
 
 def t_prime(t, x, u) -> float:
@@ -22,7 +23,8 @@ def x_prime(t, x, u) -> float:
     gamma = 1 / (m.sqrt(1 - u * u))
     return gamma * (x - u * t)
 
-def rel_add_velocity(v1 , v2) -> float:
+
+def rel_add_velocity(v1, v2) -> float:
     """Add velocity v1 and v2 relativistically. Assumed is that the velocities are in units of c"""
     return (v1 + v2)/(1 + v1*v2)
 
@@ -44,15 +46,15 @@ class Actor(object):
 
     def convert_color(self, color):
         """Take in a color name and convert it to a plotly color tuple."""
-        color_tuple = None
         if type(color) is str:
             ct = ccc.to_rgb(color)
-            return (int(ct[0]*255), int(ct[1]*255), int(ct[2]*255))
+            return int(ct[0]*255), int(ct[1]*255), int(ct[2]*255)
         elif type(color) is tuple or type(color) is list:
             return color
 
     def color_rgba(self, alpha=1.):
         return "rgba({:d},{:d},{:d},{:4.3f})".format(self.color[0], self.color[1], self.color[2], alpha)
+
 
 class MinkowsiPlot(object):
 
@@ -87,13 +89,11 @@ class MinkowsiPlot(object):
 
         self._fig = go.Figure(
             layout=go.Layout(
-                xaxis=dict(range=[self._xmin, self._xmax], autorange=False),
-                yaxis=dict(range=[self._ymin, self._ymax], autorange=False),
+                xaxis=dict(range=[self._xmin, self._xmax], autorange=False, title="x [light-seconds]"),
+                yaxis=dict(range=[self._ymin, self._ymax], autorange=False, title="t [seconds]"),
                 width=width,
                 height=height,
                 title="Minkowski Diagram",
-                xaxis_title="x [light-seconds]",
-                yaxis_title="t [seconds]"
             ))
 
         for actor in self._actors:
@@ -149,7 +149,7 @@ class MinkowsiPlot(object):
             (x_grid, y_grid) = self.make_grid(rel_add_velocity(u, -actor.velocity))
             fig.add_trace(go.Scatter(
                 # marker=dict(color=actor.color, size=actor.size),
-                line=dict(color=actor.color_rgba(0.3), width=0.5),
+                line=dict(color=actor.color_rgba(0.2), width=0.5),
                 mode='lines',
                 x=x_grid,
                 y=y_grid,
@@ -161,70 +161,72 @@ class MinkowsiPlot(object):
 
     def make_grid(self, beta):
 
-        NGridSteps = 21 * 2
-        Zmin = -10 * 2
-        Zmax = 10 * 2
+        ngridsteps = 21 * 2
+        z_min = -10 * 2
+        z_max = 10 * 2
 
         # Draw the vertical lines.
-        xx1=[]
-        yy1=[]
-        for i in range(NGridSteps):
-            x = Zmin + i
-            t_up = Zmax
-            t_down = Zmin
-            xx1.append(x_prime(t_down, x, beta))
-            yy1.append(t_prime(t_down, x, beta))
-            xx1.append(x_prime(t_up, x, beta))
-            yy1.append(t_prime(t_up, x, beta))
-            xx1.append(None)
-            yy1.append(None)
-        #
-        # yy1 = [Zmin, Zmax, None] * NGridSteps
-        # xx1 = list(np.array([(x - (3 * NGridSteps // 2 - 1)) // 3 for x in range(3 * NGridSteps)]) +
-        #            np.array([x0_min, x0_max, 0] * NGridSteps))
-
+        xx1 = []
+        yy1 = []
         xx2 = []
         yy2 = []
-        for i in range(NGridSteps):
-            t = Zmin + i
-            x_left = Zmax
-            x_right = Zmin
-            xx2.append(x_prime(t, x_left, beta))
-            yy2.append(t_prime(t, x_left, beta))
-            xx2.append(x_prime(t, x_right, beta))
-            yy2.append(t_prime(t, x_right, beta))
+
+        for i in range(ngridsteps):
+            xt = z_min + i
+            xx1.append(x_prime(z_min, xt, beta))
+            yy1.append(t_prime(z_min, xt, beta))
+            xx1.append(x_prime(z_max, xt, beta))
+            yy1.append(t_prime(z_max, xt, beta))
+            xx1.append(None)
+            yy1.append(None)
+
+            xx2.append(x_prime(xt, z_min, beta))
+            yy2.append(t_prime(xt, z_min, beta))
+            xx2.append(x_prime(xt, z_max, beta))
+            yy2.append(t_prime(xt, z_max, beta))
             xx2.append(None)
             yy2.append(None)
 
-        # xx2 = [Zmin, Zmax, None] * NGridSteps
-        # yy2 = list(np.array([(x - (3 * NGridSteps // 2 - 1)) // 3 for x in range(3 * NGridSteps)]) +
-        #            np.array([y0_min, y0_max, 0] * NGridSteps))
+        # xx2 = [z_min, z_max, None] * ngridsteps
+        # yy2 = list(np.array([(x - (3 * ngridsteps // 2 - 1)) // 3 for x in range(3 * ngridsteps)]) +
+        #            np.array([y0_min, y0_max, 0] * ngridsteps))
 
         x_grid = xx1 + xx2
         y_grid = yy1 + yy2
-        return (x_grid, y_grid)
+        return x_grid, y_grid
 
     def add_slider(self):
         """Add the slider to the figure."""
-
-        NSets = len(self._actors)
+        #
+        # This turns out to be trickier than expected. For the generated Java-Script to work in a web page,
+        # all the data must be pre-loaded (i.e. nothing is computed on the fly). The slider then simply sets
+        # the visibility for specific parts of the plot.
+        # To make this happen, we need to keep careful track of the number of curves on our plot, and the
+        # order in which they are added, so that the True/False array in "args" has the same structure as the data.
+        # This is not implemented ideally or most flexibly here. We just keep careful track of this code and
+        # all the code adding curves.
+        # Potential Issue: Code outside of this class can add features to the plot which are then
+        # not properly turned on or off.
+        #
+        n_sets = len(self._actors)
         steps = []
         for i in range(self.SliderSteps):
             u = self.compute_u_from_step(i)
             step = dict(
                 method="update",
                 # Here we set which graphs will be visible.
-                args=[{"visible": [False] * (2*NSets * self.SliderSteps + 1)},
+                args=[{"visible": [False] * (2*n_sets * self.SliderSteps + 1)},
                       {"title": "Minkowski Space Time with boost u = {:4.2f} c".format(u)},
                       ],  # layout attribute
                 label="{:3.1f}".format(u),
             )
 
-            for j in range(NSets):
+            for j in range(n_sets):
                 step["args"][0]["visible"][2*self.SliderSteps * j + 2*i] = True  # Toggle i'th trace to "visible"
-                step["args"][0]["visible"][2*self.SliderSteps * j + 2*i+1] = self.ShowAltAxes  # Toggle i'th trace to "visible"
+                # Only set the grid lines visible is ShowAltAxes is true:
+                step["args"][0]["visible"][2*self.SliderSteps * j + 2*i+1] = self.ShowAltAxes
 
-            step["args"][0]["visible"][2*NSets * self.SliderSteps] = True  # Toggle last trace to "visible"
+            step["args"][0]["visible"][2*n_sets * self.SliderSteps] = True  # Toggle light-ray trace to "visible"
             steps.append(step)
 
         # Create and add slider
@@ -235,15 +237,14 @@ class MinkowsiPlot(object):
             steps=steps
         )]
 
-        for j in range(NSets):
+        for j in range(n_sets):
             self._fig.data[2*self.SliderSteps * j + 2 * (self.SliderSteps // 2)].visible = True
             self._fig.data[2*self.SliderSteps * j + 2 * (self.SliderSteps // 2) + 1].visible = self.ShowAltAxes
 
-        # if len(self._fig.data) > NSets*NSets:
-        #     for j in range(NSets*NSets, len(self._fig.data)):
+        # if len(self._fig.data) > n_sets*n_sets:
+        #     for j in range(n_sets*n_sets, len(self._fig.data)):
         #         self._fig.data[j].visible = True
 
         self._fig.update_layout(
             sliders=sliders
         )
-
