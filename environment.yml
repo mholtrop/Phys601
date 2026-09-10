@@ -9,6 +9,7 @@ dependencies:
   # Core numerical and plotting packages
   - numpy
   - scipy
+  - scipy-stubs
   - matplotlib
   - pandas
   - plotly
