@@ -1,0 +1,25 @@
+# Conda environment for Phys601.
+# Create it with:   conda env create -f environment.yml
+# Update it with:   conda env update -f environment.yml --prune
+name: phys601
+channels:
+  - conda-forge
+dependencies:
+  - python>=3.11
+  # Core numerical and plotting packages
+  - numpy
+  - scipy
+  - matplotlib
+  - pandas
+  - plotly
+  - sympy
+  - mpmath
+  - pint
+  - openpyxl   # lets pandas read Excel files (02b_Intro_to_Pandas)
+  # Notebooks (JupyterLab also provides what PyCharm needs to run notebooks)
+  - jupyterlab
+  - ipykernel
+  - ipywidgets
+  # Used in a few later notebooks
+  - numba      # 12_Faster_Programs
+  - vpython    # 13_Animation
