@@ -24,3 +24,5 @@ dependencies:
   # Used in a few later notebooks
   - numba      # 12_Faster_Programs
   - vpython    # 13_Animation
+  - pip:
+    - kaleido
