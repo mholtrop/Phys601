@@ -9,3 +9,4 @@ which is used in other notebooks.
 diagram and illustrates the problem of Spaceman Spiff shooting a railgun 
 pellet to the front of their spaceship. A (probably outdated) live version
 of this page: [Spaceman Spiff Shoots a Pellet](http://nuclear.unh.edu/~maurik/Phys505/Spiff_Shoots_Pellet.shtml)
+* Run this notebook in Google Collab open it: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mholtrop/Phys601/blob/master/Special_Relativity/Spiff_Shoots_Pellet.ipynb) and then uncomment the two lines in the first cell (i.e. remove the "#" character)
