@@ -12,27 +12,38 @@ bring your own computer, and bring problems from your other courses.
 
 There are two ways to run the notebooks.
 
-**In the browser, no installation.** Open any notebook in Google Colab by replacing
+### **In the browser, no installation.** 
+Open any notebook in Google Colab by replacing
 `https://github.com/` in its address with `https://colab.research.google.com/github/`.
 To keep your changes, save a copy to your Google Drive. Try it with the first notebook:
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mholtrop/Phys601/blob/master/Notebooks/00_Intro_Notebooks.ipynb)
 
-**On your own computer (recommended).** We suggest PyCharm together with a conda environment from Miniforge.
+Some times you will need to clone the repository in Google Colab if there are additional files
+needed to make the code work.
 
-1. First Install [Miniforge](https://github.com/conda-forge/miniforge) and then [PyCharm](https://www.jetbrains.com/pycharm/).
-   PyCharm's core version, including Jupyter notebook support, is free. Students can get the Pro version free
-   through the [JetBrains Student Pack](https://www.jetbrains.com/community/education/#students).
-2. In PyCharm, clone this repository (`https://github.com/mholtrop/Phys601.git`) with "Clone Repository"
-   on the welcome screen.
-3. Open a terminal in the `Phys601` folder (on Windows, use the "Miniforge Prompt") and create the
-   course environment from the included [environment.yml](environment.yml):
+### **On your own computer (recommended method).** 
+We suggest PyCharm together with a conda environment from Miniforge.
+
+1. First install [Miniforge](https://github.com/conda-forge/miniforge) 
+   1. Scroll down to the Install section. Then follow the Windows or MacOS or Linux directions.
+   2. For Windows install, you want the "miniforge prompt" option.
+   3. Download the environment.yml file from this GitHub repository.
+   4. At the "miniforge prompt" on Windows, or in the terminal on MacOS/Lunux create the environment for Physics 601:
    ```bash
-   conda env create -f environment.yml
+   conda env create -f environment
    ```
-4. Back in PyCharm, set the project interpreter: choose **Conda** and select the existing `phys601`
+2. Next install [PyCharm](https://www.jetbrains.com/pycharm/).
+PyCharm's core version, including Jupyter notebook support, is free. Students can get the Pro version free
+through the [JetBrains Student Pack](https://www.jetbrains.com/community/education/#students).
+3. In PyCharm, clone this repository (`https://github.com/mholtrop/Phys601.git`) with "Clone Repository"
+   on the welcome screen.
+4. In PyCharm, set the project interpreter: choose **Conda** and select the existing `phys601`
    environment. (PyCharm may suggest uv or a new virtualenv instead; don't take that default.)
+   1. If you have multiple environments, you can set the environment in PyCharm by clicking the interpreter name at the bottom right of the screen and use the menu to choose another interpreter, or install another version.
 
-If you prefer not to use PyCharm, JupyterLab works on its own:
+### **On your own computer, using JupyterLab**
+If you prefer not to use PyCharm, JupyterLab works on its own. First install Miniforge (see above), 
+next you can get the code and run JupyterLab:
 
 ```bash
 git clone https://github.com/mholtrop/Phys601.git
@@ -48,7 +59,9 @@ If any of this does not work for you, bring your laptop to recitation. Getting s
 ## Where to start
 
 Begin with `Notebooks/00_Intro_Notebooks` and the two `00_python_tutorial` notebooks, then continue
-in numerical order. Notebooks starting with "A" are advanced; those starting with "E" are extras.
+in numerical order. You can also skip around, but you probably want to do "Basic Calculus" and 
+"Intro to Plotting".  Notebooks starting with "A" are a bit more advanced; 
+those starting with "E" are extras.
 [Notebooks/README.md](Notebooks/README.md) describes each one.
 
 | Folder | Contents |
