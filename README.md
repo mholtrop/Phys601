@@ -71,3 +71,5 @@ those starting with "E" are extras.
 | `Advanced` | Larger examples, with less step-by-step explanation |
 | `QM_Notebooks` | Numerical quantum mechanics: bound states, time evolution, tunneling |
 | `Special_Relativity` | Minkowski space-time diagram tools (used in Phys 505) |
+| `Symbolic_Computation` | Use symbolic computations instead of numeric ones with Sage or Sympy |
+
